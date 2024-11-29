@@ -23,3 +23,25 @@ for cancer_type in os.listdir(dir):                             # pels 3 tipus d
         # print(images)
 
 ### Ara ja tenim les imatges processades i guardades en el diccionari d'imatges
+# SIFT:
+
+sift = cv2.SIFT_create()
+
+keypoints_descriptors = {}
+
+for cancer_type, img_list in images.items():
+    keypoints_descriptors[cancer_type] = []
+    for img in img_list:
+        keypoints, descriptors = sift.detectAndCompute(img, None)
+        keypoints_descriptors[cancer_type].append(descriptors)
+
+print(keypoints_descriptors)
+
+### BoW - kmeans?
+
+
+### histograma, X,y...
+
+
+### SVC? no se si es viable amb tantes dimensions.1
+

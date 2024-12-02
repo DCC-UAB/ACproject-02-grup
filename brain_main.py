@@ -36,7 +36,7 @@ step_size = 8  # Ajusta la densitat segons calgui
 for cancer_type, img_list in images.items():
     dense_sift_features[cancer_type] = []
     for img in img_list:
-        print('ei')
+        # print('ei')
         keypoints, descriptors = bu.denseSIFT_mask(img, step_size=step_size) # te una mascara binaria, ignora tots els pixels que estiguin a 0
         dense_sift_features[cancer_type].append(descriptors)  # Guarda descriptors
 

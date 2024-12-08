@@ -1,7 +1,7 @@
 import cv2
 import os
 import numpy as np
-import sklearn
+from sklearn.cluster import KMeans
 
 """DOCUMENT DE FUNCIONS, RES DE PIPELINES. AQUÍ POSEM LES FUNCIONS PER CRIDAR-LES EN EL 'MAIN' NOSTRE --> BRAIN-MAIN.PY"""
 
@@ -46,6 +46,43 @@ def denseSIFT_mask(image, step_size=8):
     # Calcula descriptors pels punts clau dins de la màscara
     keypoints, descriptors = sift.compute(image, keypoints)
     return keypoints, descriptors
+
+
+# Carregar imatges i etiquetes
+def load_images_and_labels_from_folder(folder_path, classes):
+    images = []
+    labels = []
+    for idx, label in enumerate(classes):
+        class_path = os.path.join(folder_path, label)
+        for file in os.listdir(class_path):
+            img_path = os.path.join(class_path, file)
+            img = resize_image(img_path)  # Usar la funció existent
+            if img is not None:
+                images.append(img)
+                labels.append(idx)
+    return np.array(images), np.array(labels)
+
+# Crear un diccionari visual amb K-Means
+def create_visual_dictionary(all_descriptors, k):
+    descriptors = np.vstack(all_descriptors)
+    print("Clustering descriptors into", k, "visual words...")
+    kmeans = KMeans(n_clusters=k, random_state=42, n_init=10)
+    kmeans.fit(descriptors)
+    return kmeans
+
+# Crear histogrames BoVW
+def create_bovw_histograms(images, kmeans):
+    sift = cv2.SIFT_create()
+    histograms = []
+    for img in images:
+        keypoints, descriptors = sift.detectAndCompute(img, None)
+        if descriptors is not None:
+            words = kmeans.predict(descriptors)
+            histogram, _ = np.histogram(words, bins=np.arange(kmeans.n_clusters + 1))
+            histograms.append(histogram)
+        else:
+            histograms.append(np.zeros(kmeans.n_clusters))
+    return np.array(histograms)
 
 
 

@@ -44,33 +44,36 @@ def filter_images(input_folder, output_folder, num_images, margin=10, threshold=
             print(f"Imatge guardada a: {output_path}")
             filtered_count += 1
 
-    print(f"Nombre d'imatges filtrades de {input_folder}: {filtered_count}")
+    return filtered_count
 
-def filter_images_by_type(input_folders, output_folder, num_images_per_type, margin=10, threshold=50):
-    for folder, num_images in num_images_per_type.items():
+def filter_images_by_type(input_folders, output_folder, margin=10, threshold=50):
+    sans_folder = input_folders["sans"]
+    num_sans_images = filter_images(sans_folder, output_folder, -1, margin, threshold)
+    
+    total_images = num_sans_images * 2  # El 50% de les dades finals són pacients sans
+    num_images_per_type = {
+        "meningioma": int(total_images * 0.225),
+        "glioma": int(total_images * 0.175),
+        "pituitari": int(total_images * 0.10)
+    }
+
+    # Filtra les altres carpetes basant-se en els nombres calculats
+    for folder in ["meningioma", "glioma", "pituitari"]:
         input_folder = input_folders[folder]
-        filter_images(input_folder, output_folder, num_images, margin, threshold)
+        filter_images(input_folder, output_folder, num_images_per_type[folder], margin, threshold)
 
 # Configuració de carpetes
 input_folders = {
-    "sans": "Brain Cancer/notumor",
-    "meningioma": "Brain Cancer/meningioma",
-    "glioma": "Brain Cancer/glioma",
-    "pituitari": "Brain Cancer/pituitary"
+    "sans": " ",
+    "meningioma": " ",
+    "glioma": " ",
+    "pituitari": " "
 }
-output_folder = "Brain Cancer/total"
-
-# Percentatges i nombre d'imatges per tipus
-num_images_per_type = {
-    "sans": 2000,
-    "meningioma": 900,
-    "glioma": 700,
-    "pituitari": 400
-}
+output_folder = " "
 
 for folder in input_folders.values():
     if not os.path.exists(folder):
         print(f"Error: La carpeta d'entrada '{folder}' no existeix.")
         break
 else:
-    filter_images_by_type(input_folders, output_folder, num_images_per_type, margin=15, threshold=50)
+    filter_images_by_type(input_folders, output_folder, margin=15, threshold=50)

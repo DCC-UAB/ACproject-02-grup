@@ -53,19 +53,19 @@ def filter_images_by_type(input_folders, output_folder, num_images_per_type, mar
 
 # Configuració de carpetes
 input_folders = {
-    "sans": r"C:\Users\quims\OneDrive\Imágenes\Escriptori\UNI\3r\1\Anàlisis Computacional\pract\img\sans",
-    "meningioma": r"C:\Users\quims\OneDrive\Imágenes\Escriptori\UNI\3r\1\Anàlisis Computacional\pract\img\brain_menin",
-    "glioma": r"C:\Users\quims\OneDrive\Imágenes\Escriptori\UNI\3r\1\Anàlisis Computacional\pract\img\brain_glioma",
-    "pituitari": r"C:\Users\quims\OneDrive\Imágenes\Escriptori\UNI\3r\1\Anàlisis Computacional\pract\img\brain_tumor"
+    "sans": "Brain Cancer/notumor",
+    "meningioma": "Brain Cancer/meningioma",
+    "glioma": "Brain Cancer/glioma",
+    "pituitari": "Brain Cancer/pituitary"
 }
-output_folder = r"C:\Users\quims\OneDrive\Imágenes\Escriptori\UNI\3r\1\Anàlisis Computacional\pract\img\total"
+output_folder = "Brain Cancer/total"
 
 # Percentatges i nombre d'imatges per tipus
 num_images_per_type = {
-    "sans": 20,
-    "meningioma": 9,
-    "glioma": 7,
-    "pituitari": 4
+    "sans": 2000,
+    "meningioma": 900,
+    "glioma": 700,
+    "pituitari": 400
 }
 
 for folder in input_folders.values():

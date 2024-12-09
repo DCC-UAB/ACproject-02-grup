@@ -1,6 +1,7 @@
 import imageio.v2 as imageio
 import os
 import numpy as np
+import random
 
 def is_top_view(image, margin=10, threshold=50):
     top_margin = image[:margin, :]
@@ -18,41 +19,58 @@ def filter_images(input_folder, output_folder, num_images, margin=10, threshold=
         os.makedirs(output_folder)
 
     filtered_count = 0
-    for i, filename in enumerate(os.listdir(input_folder)):
-        if filename.endswith(('.png', '.jpg', '.jpeg')):
-            if num_images != -1 and filtered_count >= num_images:
-                break
+    images = [f for f in os.listdir(input_folder) if f.endswith(('.png', '.jpg', '.jpeg'))]
+    random.shuffle(images)  # Barreja les imatges per obtenir una selecció aleatòria
 
-            image_path = os.path.join(input_folder, filename)
-            output_path = os.path.join(output_folder, filename)
+    for filename in images:
+        if num_images != -1 and filtered_count >= num_images:
+            break
 
-            if os.path.exists(output_path):
-                print(f"La imatge ja existeix a la carpeta de sortida: {output_path}")
-                continue
-            try:
-                image = imageio.imread(image_path, mode='L')
-            except Exception as e:
-                print(f"Error llegint la imatge amb imageio: {e}")
-                continue
+        image_path = os.path.join(input_folder, filename)
+        output_path = os.path.join(output_folder, filename)
 
-            if is_top_view(image, margin=margin, threshold=threshold):
-                imageio.imwrite(output_path, image)
-                print(f"Imatge guardada a: {output_path}")
-                filtered_count += 1
+        if os.path.exists(output_path):
+            print(f"La imatge ja existeix a la carpeta de sortida: {output_path}")
+            continue
+
+        try:
+            image = imageio.imread(image_path, mode='L')
+        except Exception as e:
+            print(f"Error llegint la imatge amb imageio: {e}")
+            continue
+
+        if is_top_view(image, margin=margin, threshold=threshold):
+            imageio.imwrite(output_path, image)
+            print(f"Imatge guardada a: {output_path}")
+            filtered_count += 1
+
+    print(f"Nombre d'imatges filtrades de {input_folder}: {filtered_count}")
+
+def filter_images_by_type(input_folders, output_folder, num_images_per_type, margin=10, threshold=50):
+    for folder, num_images in num_images_per_type.items():
+        input_folder = input_folders[folder]
+        filter_images(input_folder, output_folder, num_images, margin, threshold)
 
 # Configuració de carpetes
-input_folder = "Carpeta amb les imatges a filtrar"
-output_folder = "Carpeta on vols desar les imatges filtrades"
+input_folders = {
+    "sans": r"C:\Users\quims\OneDrive\Imágenes\Escriptori\UNI\3r\1\Anàlisis Computacional\pract\img\sans",
+    "meningioma": r"C:\Users\quims\OneDrive\Imágenes\Escriptori\UNI\3r\1\Anàlisis Computacional\pract\img\brain_menin",
+    "glioma": r"C:\Users\quims\OneDrive\Imágenes\Escriptori\UNI\3r\1\Anàlisis Computacional\pract\img\brain_glioma",
+    "pituitari": r"C:\Users\quims\OneDrive\Imágenes\Escriptori\UNI\3r\1\Anàlisis Computacional\pract\img\brain_tumor"
+}
+output_folder = r"C:\Users\quims\OneDrive\Imágenes\Escriptori\UNI\3r\1\Anàlisis Computacional\pract\img\total"
 
-# Codi per mirar quin valor de marge va millor
-try:
-    num_images = int(input("Quantes imatges vols filtrar? (-1 per filtrar-les totes): "))
-    if num_images < -1:
-        raise ValueError("El número d'imatges no pot ser negatiu.")
-except ValueError as e:
-    print(f"Error: {e}")
+# Percentatges i nombre d'imatges per tipus
+num_images_per_type = {
+    "sans": 20,
+    "meningioma": 9,
+    "glioma": 7,
+    "pituitari": 4
+}
+
+for folder in input_folders.values():
+    if not os.path.exists(folder):
+        print(f"Error: La carpeta d'entrada '{folder}' no existeix.")
+        break
 else:
-    if not os.path.exists(input_folder):
-        print(f"Error: La carpeta d'entrada '{input_folder}' no existeix.")
-    else:
-        filter_images(input_folder, output_folder, num_images, margin=15, threshold=50)
+    filter_images_by_type(input_folders, output_folder, num_images_per_type, margin=15, threshold=50)

@@ -61,19 +61,22 @@ def filter_images_by_type(input_folders, output_folder, margin=10, threshold=50)
     for folder in ["meningioma", "glioma", "pituitari"]:
         input_folder = input_folders[folder]
         filter_images(input_folder, output_folder, num_images_per_type[folder], margin, threshold)
+    return num_images_per_type, num_sans_images
 
 # Configuració de carpetes
 input_folders = {
-    "sans": " ",
-    "meningioma": " ",
-    "glioma": " ",
-    "pituitari": " "
+    "sans": "Brain Cancer/notumor",
+    "meningioma": "Brain Cancer/meningioma",
+    "glioma": "Brain Cancer/glioma",
+    "pituitari": "Brain Cancer/pituitary"
 }
-output_folder = " "
+output_folder = "Brain Cancer/total"
 
 for folder in input_folders.values():
     if not os.path.exists(folder):
         print(f"Error: La carpeta d'entrada '{folder}' no existeix.")
         break
 else:
-    filter_images_by_type(input_folders, output_folder, margin=15, threshold=50)
+    dic_types,sans=filter_images_by_type(input_folders, output_folder, margin=15, threshold=50)
+
+print("S'han afegit:\n-",sans,"imatges de pacients sans\n-",dic_types["glioma"],"imatges de pacients sans\n-",dic_types["meningioma"],"imatges de pacients sans\n-",dic_types["pituitari"],"imatges de pacients sans")

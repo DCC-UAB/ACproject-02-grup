@@ -63,10 +63,10 @@ output_base_folder = "Brain Cancer"
 
 # Percentages and number of images per type
 num_images_per_type = {
-    "sans": 20,
-    "meningioma": 9,
-    "glioma": 7,
-    "pituitari": 4
+    "sans": 2000,
+    "meningioma": 900,
+    "glioma": 700,
+    "pituitari": 400
 }
 
 for folder in input_folders.values():

@@ -56,7 +56,7 @@ def filter_images_by_type(input_folders, output_base_folder, margin=10, threshol
     num_images_per_type = {
         "meningioma": int(total_filtered_images * 0.225),
         "glioma": int(total_filtered_images * 0.175),
-        "pituitari": int(total_filtered_images * 0.10)
+        "pituitary": int(total_filtered_images * 0.10)
     }
 
     for folder_type, num_images in num_images_per_type.items():
@@ -78,4 +78,4 @@ for folder in input_folders.values():
         print(f"Error: The input folder '{folder}' does not exist.")
         break
 else:
-    filter_images_by_type(input_folders, output_base_folder, margin=15, threshold=50)
+    filter_images_by_type(input_folders, output_base_folder, margin=12, threshold=50)

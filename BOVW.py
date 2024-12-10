@@ -47,6 +47,7 @@ def create_visual_dictionary(all_descriptors, k):
     kmeans.fit(descriptors)
     return kmeans
 
+"""
 # Crear histogrames BoVW
 def create_bovw_histograms(images, kmeans):
     sift = cv2.SIFT_create()
@@ -60,6 +61,20 @@ def create_bovw_histograms(images, kmeans):
         else:
             histograms.append(np.zeros(kmeans.n_clusters))
     return np.array(histograms)
+"""
+
+# Crear histogrames BoVW amb descriptors pre-calculats
+def create_bovw_histograms(descriptors_list, kmeans):
+    histograms = []
+    for descriptors in descriptors_list:
+        if descriptors is not None:
+            words = kmeans.predict(descriptors)
+            histogram, _ = np.histogram(words, bins=np.arange(kmeans.n_clusters + 1))
+            histograms.append(histogram)
+        else:
+            histograms.append(np.zeros(kmeans.n_clusters))
+    return np.array(histograms)
+
 
 # Pipeline principal
 def main():

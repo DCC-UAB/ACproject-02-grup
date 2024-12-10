@@ -5,6 +5,7 @@ import sklearn
 import time
 from sklearn.svm import SVC
 from sklearn.metrics import accuracy_score, classification_report
+import BOVW
 
 '''t0 = time.time()
 
@@ -56,10 +57,11 @@ print('SIFT descriptors creats en:', t2-t1)
 
 ### SVC? no se si es viable amb tantes dimensions. --> rbf'''
 
+from sklearn.model_selection import train_test_split
+
 # Configuració de carpetes i classes
-base_path = './Brain Cancer'
-training_path = f"{base_path}/Training"
-testing_path = f"{base_path}/Testing"
+base_path = './Brain Cancer/filtre'
+data_path = base_path
 classes = ["glioma", "meningioma", "notumor", "pituitary"]
 k = 50  # Número de clústers
 
@@ -67,12 +69,13 @@ k = 50  # Número de clústers
 t0 = time.time()
 
 # Carregar dades
-print("Carregant imatges d'entrenament...")
-train_images, train_labels = bu.load_images_and_labels_from_folder(training_path, classes)
-print("Carregant imatges de test...")
-test_images, test_labels = bu.load_images_and_labels_from_folder(testing_path, classes)
+print("Carregant imatges i etiquetes...")
+images, labels = bu.load_images_and_labels_from_folder(data_path, classes)
 
-t1 = time.time()
+# Dividir les dades en entrenament i test
+train_images, test_images, train_labels, test_labels = train_test_split(images, labels, test_size=0.2, random_state=42)
+
+t1 = time.time() #a
 print(f"Dades carregades i processades en: {t1 - t0:.2f} segons")
 
 # Extreure descriptors SIFT per entrenament
@@ -87,11 +90,13 @@ for img in train_images:
 print("Creant diccionari visual amb K-Means...")
 kmeans = bu.create_visual_dictionary(train_descriptors, k)
 
-# Crear histogrames BoVW
+# Crear histogrames BoVW amb descriptors pre-calculats
 print("Creant histogrames BoVW per a dades d'entrenament...")
-train_histograms = bu.create_bovw_histograms(train_images, kmeans)
+train_histograms = bu.create_bovw_histograms(train_descriptors, kmeans)
 print("Creant histogrames BoVW per a dades de test...")
-test_histograms = bu.create_bovw_histograms(test_images, kmeans)
+test_descriptors = [bu.denseSIFT_mask(img)[1] for img in test_images]
+test_histograms = bu.create_bovw_histograms(test_descriptors, kmeans)
+
 
 # Aquí podrías agregar la lógica para entrenar el SVM o cualquier otro modelo
 # per a predir i avaluar resultats.
@@ -101,8 +106,7 @@ print(f"Pipeline completat en: {t2 - t0:.2f} segons")
 
 # Entrenar un classificador (SVM)
 print("Training SVM classifier...")
-#svm = SVC(kernel='rbf', random_state=42)
-svm = SVC(kernel='linear', random_state=42)
+svm = SVC(kernel='rbf', random_state=42)
 
 svm.fit(train_histograms, train_labels)
 

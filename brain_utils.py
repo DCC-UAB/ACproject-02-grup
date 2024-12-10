@@ -70,12 +70,10 @@ def create_visual_dictionary(all_descriptors, k):
     kmeans.fit(descriptors)
     return kmeans
 
-# Crear histogrames BoVW
-def create_bovw_histograms(images, kmeans):
-    sift = cv2.SIFT_create()
+# Crear histogrames BoVW amb descriptors pre-calculats
+def create_bovw_histograms(descriptors_list, kmeans):
     histograms = []
-    for img in images:
-        keypoints, descriptors = sift.detectAndCompute(img, None)
+    for descriptors in descriptors_list:
         if descriptors is not None:
             words = kmeans.predict(descriptors)
             histogram, _ = np.histogram(words, bins=np.arange(kmeans.n_clusters + 1))

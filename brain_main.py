@@ -62,7 +62,7 @@ from sklearn.model_selection import train_test_split
 # Configuració de carpetes i classes
 base_path = './Brain Cancer/filtre'
 data_path = base_path
-classes = ["glioma", "meningioma", "notumor", "pituitary"]
+classes = ["glioma_filtrat", "meningioma_filtrat", "notumor_filtrat", "pituitary_filtrat"]
 k = 50  # Número de clústers
 
 # Processament principal

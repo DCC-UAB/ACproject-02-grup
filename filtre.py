@@ -69,7 +69,7 @@ input_folders = {
     "sans": "Brain Cancer/notumor",
     "meningioma": "Brain Cancer/meningioma",
     "glioma": "Brain Cancer/glioma",
-    "pituitari": "Brain Cancer/pituitary"
+    "pituitary": "Brain Cancer/pituitary"
 }
 output_base_folder = "Brain Cancer/filtre"
 
@@ -78,4 +78,4 @@ for folder in input_folders.values():
         print(f"Error: The input folder '{folder}' does not exist.")
         break
 else:
-    filter_images_by_type(input_folders, output_base_folder, margin=15, threshold=50)
+    filter_images_by_type(input_folders, output_base_folder, margin=12, threshold=50)

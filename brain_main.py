@@ -5,7 +5,6 @@ import sklearn
 import time
 from sklearn.svm import SVC
 from sklearn.metrics import accuracy_score, classification_report
-import BOVW
 
 '''t0 = time.time()
 

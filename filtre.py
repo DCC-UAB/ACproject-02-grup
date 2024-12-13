@@ -48,10 +48,8 @@ def filter_images(input_folder, output_folder, num_images=-1, margin=10, thresho
     return filtered_count
 
 def filter_images_by_type(input_folders, output_base_folder, margin=10, threshold=50):
-    # Filter all images from the 'notumor' folder first
     notumor_filtered_count = filter_images(input_folders["sans"], os.path.join(output_base_folder, "notumor"), margin=margin, threshold=threshold) #en cas de voler afegir 'filtrat' pels sans, es posa aqui
 
-    # Calculate the number of images to filter for each type based on the number of 'notumor' images filtered
     total_filtered_images = notumor_filtered_count / 0.50
     num_images_per_type = {
         "meningioma": int(total_filtered_images * 0.225),
@@ -64,7 +62,6 @@ def filter_images_by_type(input_folders, output_base_folder, margin=10, threshol
         output_folder = os.path.join(output_base_folder, f"{folder_type}") #en cas de voler afegir 'filtrat' pels malalts, es posa aqui
         filter_images(input_folder, output_folder, num_images, margin, threshold)
 
-# Folder configuration
 input_folders = {
     "sans": "Brain Cancer/notumor",
     "meningioma": "Brain Cancer/meningioma",

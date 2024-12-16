@@ -14,9 +14,12 @@ def is_top_view(image, margin=10, threshold=50):
         return True
     return False
 
-def filter_images(input_folder, output_folder, num_images=-1, margin=10, threshold=50):
+def filter_images(input_folder, output_folder, not_filtered_folder, num_images=-1, margin=10, threshold=50):
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
+    
+    if not os.path.exists(not_filtered_folder):
+        os.makedirs(not_filtered_folder)
 
     filtered_count = 0
     images = [f for f in os.listdir(input_folder) if f.endswith(('.png', '.jpg', '.jpeg'))]
@@ -28,6 +31,7 @@ def filter_images(input_folder, output_folder, num_images=-1, margin=10, thresho
 
         image_path = os.path.join(input_folder, filename)
         output_path = os.path.join(output_folder, filename)
+        not_filtered_path = os.path.join(not_filtered_folder, filename)
 
         if os.path.exists(output_path):
             print(f"The image already exists in the output folder: {output_path}")
@@ -43,12 +47,15 @@ def filter_images(input_folder, output_folder, num_images=-1, margin=10, thresho
             imageio.imwrite(output_path, image)
             print(f"Image saved to: {output_path}")
             filtered_count += 1
+        else:
+            imageio.imwrite(not_filtered_path, image)
+            print(f"Image saved to: {not_filtered_path}")
 
     print(f"Number of images filtered from {input_folder}: {filtered_count}")
     return filtered_count
 
-def filter_images_by_type(input_folders, output_base_folder, margin=10, threshold=50):
-    notumor_filtered_count = filter_images(input_folders["sans"], os.path.join(output_base_folder, "notumor"), margin=margin, threshold=threshold) #en cas de voler afegir 'filtrat' pels sans, es posa aqui
+def filter_images_by_type(input_folders, output_base_folder, not_filtered_folder, margin=10, threshold=50):
+    notumor_filtered_count = filter_images(input_folders["sans"], os.path.join(output_base_folder, "notumor"), not_filtered_folder, margin=margin, threshold=threshold) #en cas de voler afegir 'filtrat' pels sans, es posa aqui
 
     total_filtered_images = notumor_filtered_count / 0.50
     num_images_per_type = {
@@ -60,7 +67,7 @@ def filter_images_by_type(input_folders, output_base_folder, margin=10, threshol
     for folder_type, num_images in num_images_per_type.items():
         input_folder = input_folders[folder_type]
         output_folder = os.path.join(output_base_folder, f"{folder_type}") #en cas de voler afegir 'filtrat' pels malalts, es posa aqui
-        filter_images(input_folder, output_folder, num_images, margin, threshold)
+        filter_images(input_folder, output_folder, not_filtered_folder, num_images, margin, threshold)
 
 input_folders = {
     "sans": "Brain Cancer/notumor",
@@ -69,10 +76,11 @@ input_folders = {
     "pituitary": "Brain Cancer/pituitary"
 }
 output_base_folder = "Brain Cancer/filtre"
+not_filtered_folder = os.path.join(output_base_folder, "not_filtered")
 
 for folder in input_folders.values():
     if not os.path.exists(folder):
         print(f"Error: The input folder '{folder}' does not exist.")
         break
 else:
-    filter_images_by_type(input_folders, output_base_folder, margin=12, threshold=50)
+    filter_images_by_type(input_folders, output_base_folder, not_filtered_folder, margin=12, threshold=50)

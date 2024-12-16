@@ -69,6 +69,16 @@ def filter_images_by_type(input_folders, output_base_folder, not_filtered_folder
         output_folder = os.path.join(output_base_folder, f"{folder_type}") #en cas de voler afegir 'filtrat' pels malalts, es posa aqui
         filter_images(input_folder, output_folder, not_filtered_folder, num_images, margin, threshold)
 
+def dos_tres(input_folder):
+    images = [f for f in os.listdir(input_folder) if f.endswith(('.png', '.jpg', '.jpeg'))]
+
+    for image in images:
+        image_path = os.path.join(input_folder, image)
+        img = np.array(cv2.imread(image_path))
+        tall = (2 * img.shape[0])//3
+        img[tall:,:] = 0
+        cv2.imwrite('image_path', image)
+
 input_folders = {
     "sans": "Brain Cancer/notumor",
     "meningioma": "Brain Cancer/meningioma",

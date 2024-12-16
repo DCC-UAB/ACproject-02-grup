@@ -2,6 +2,7 @@ import imageio.v2 as imageio
 import os
 import numpy as np
 import random
+import cv2
 
 def is_top_view(image, margin=10, threshold=50):
     top_margin = image[:margin, :]
@@ -75,9 +76,12 @@ def dos_tres(input_folder):
     for image in images:
         image_path = os.path.join(input_folder, image)
         img = np.array(cv2.imread(image_path))
-        tall = (2 * img.shape[0])//3
-        img[tall:,:] = 0
-        cv2.imwrite('image_path', image)
+        if image is not None:
+            tall = (2 * img.shape[0])//3
+            img[tall:,:] = 0
+
+            output_path = os.path.join(input_folder, f"FILTRE_{image}") #evitem sobreescriure millor :/
+            cv2.imwrite(output_path, img)
 
 input_folders = {
     "sans": "Brain Cancer/notumor",

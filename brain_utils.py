@@ -62,6 +62,26 @@ def load_images_and_labels_from_folder(folder_path, classes):
                 labels.append(idx)
     return np.array(images), np.array(labels)
 
+# Carregar imatges i etiquetes des de les rutes indicades en el diccionari
+def load_images_and_labels_from_dict(folder_dict, classes):
+    images = []
+    labels = []
+    
+    # Iterem sobre les classes i les seves rutes associades
+    for idx, label in enumerate(classes):
+        class_path = folder_dict.get(label)  # Obtenir la ruta de la classe
+        if not class_path:
+            print(f"Warning: No path found for class {label}")
+            continue
+        for file in os.listdir(class_path):
+            img_path = os.path.join(class_path, file)
+            img = resize_image(img_path)  # Usar la funció existent per redimensionar
+            if img is not None:
+                images.append(img)
+                labels.append(idx)
+    
+    return np.array(images), np.array(labels)
+
 # Crear un diccionari visual amb K-Means
 def create_visual_dictionary(all_descriptors, k):
     descriptors = np.vstack(all_descriptors)
